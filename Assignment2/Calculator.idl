@@ -1,0 +1,16 @@
+module CalculatorApp {
+    // Interface definition for the Calculator
+    interface Calculator {
+        // Method for addition
+        float add(in float a, in float b);
+
+        // Method for subtraction
+        float subtract(in float a, in float b);
+
+        // Method for multiplication
+        float multiply(in float a, in float b);
+
+        // Method for division
+        float divide(in float a, in float b);
+    };
+};
