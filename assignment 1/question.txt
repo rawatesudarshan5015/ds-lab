@@ -1,0 +1,235 @@
+Assignment Summary
+
+You built a simple RMI-based application with the following functionality:
+
+    The client enters two strings.
+
+    The server concatenates those strings remotely.
+
+    The result is displayed back to the client.
+
+The project uses Java RMI (Remote Method Invocation) to allow a client to call a method on a server located on a different machine or JVM.
+📚 Frequently Asked Viva Questions (with Detailed Answers)
+1. What is Java RMI, and why is it used in this assignment?
+
+Answer:
+Java RMI (Remote Method Invocation) allows a Java program to call methods on an object running in another Java Virtual Machine (JVM). In this assignment, we used RMI so that a client program can call a method (concat) located on the server side. This helps demonstrate how distributed Java applications work.
+2. Explain the role of each Java file in your assignment.
+
+Answer:
+
+    ServerInterface.java: This is a remote interface. It defines the concat(String a, String b) method which can be called remotely.
+
+    Servant.java: This is the class that implements the ServerInterface. It provides the actual logic of concatenating two strings.
+
+    Server.java: This class registers the Servant object with the RMI registry, making it available to clients.
+
+    Client.java: This class asks the user for input, connects to the RMI server, calls the concat method, and shows the result.
+
+3. What does extends UnicastRemoteObject mean in the Servant class?
+
+Answer:
+UnicastRemoteObject is a base class in RMI that makes an object remotely accessible. When Servant extends it, Java automatically handles the low-level network communication required to let a remote client call the concat method.
+4. What does throws RemoteException mean in the interface method?
+
+Answer:
+Remote communication can fail (due to network issues, server down, etc.), so Java forces us to handle these exceptions. The RemoteException is a checked exception that must be declared for all methods in a remote interface.
+5. What does Naming.rebind("Server", s) do in Server.java?
+
+Answer:
+This command registers the remote object (s, the Servant) with the RMI registry under the name "Server". The client can now look it up by this name.
+6. What is the purpose of Naming.lookup() in Client.java?
+
+Answer:
+This method connects to the RMI registry running on the server machine and retrieves the remote object registered as "Server". It then allows the client to call the method concat() on that object remotely.
+7. What steps are required to run your RMI application?
+
+Answer:
+
+    Compile all .java files using javac.
+
+    Start the RMI Registry using start rmiregistry or rmiregistry &.
+
+    Run the Server.java file.
+
+    Run the Client.java file from another terminal or machine.
+
+    Enter two strings when prompted.
+
+8. Why did you close the Scanner in the Client class?
+
+Answer:
+To prevent memory/resource leaks. Not closing the Scanner object might lead to warnings and inefficient resource usage.
+9. What output will be shown when input strings are "Good" and "Morning"?
+
+Answer:
+Output:
+
+Concatenated String: GoodMorning
+
+10. What happens if the server is not running, and you start the client?
+
+Answer:
+The client will throw a ConnectException or NotBoundException because it can’t find the object "Server" in the registry.
+11. What is a stub in RMI?
+
+Answer:
+A stub is a proxy object on the client side that represents the remote object. When the client calls a method, the stub sends the call over the network to the actual server object.
+12. What is the RMI Registry?
+
+Answer:
+It’s a simple name service provided by Java to register and look up remote objects. It runs as a separate process and must be started before running the server.
+13. How is RMI different from socket programming?
+
+Answer:
+
+    RMI works at the object level (method calls), whereas sockets work at the byte level.
+
+    RMI is easier for Java developers, but less flexible than raw socket programming.
+
+    RMI handles a lot of low-level networking behind the scenes.
+
+14. Can you make your RMI application support more than one method (e.g., reverse, uppercase)?
+
+Answer:
+Yes. Just add new method declarations in ServerInterface.java, implement them in Servant.java, and call them from Client.java as needed.
+15. What are the advantages of RMI?
+
+Answer:
+
+    Simplifies distributed computing in Java.
+
+    Works with object-oriented programming directly.
+
+    Provides built-in mechanisms like serialization and garbage collection.
+
+
+
+Sure! Here are more detailed viva/practical questions and answers based on your Java RMI assignment:
+16. What is the purpose of Remote interface in Java RMI?
+
+Answer:
+The Remote interface is a marker interface in Java, which means it has no methods. It is used to indicate that an object’s methods can be called remotely. Any interface that you want to use for RMI must extend Remote.
+17. Why do we need to implement an interface in RMI?
+
+Answer:
+RMI uses interfaces to define the contract between client and server. The client only knows the interface (methods it can call), not the actual implementation. This makes it easy to separate the server logic from the client.
+18. What is the difference between bind() and rebind() in RMI?
+
+Answer:
+
+    bind(name, obj): Binds the object if the name is not already used.
+
+    rebind(name, obj): Replaces the existing binding if the name is already used.
+
+In your code, you used rebind() to avoid errors if the name "Server" was already registered.
+19. What is object serialization in RMI?
+
+Answer:
+Serialization means converting a Java object into a byte stream so that it can be sent over the network. In RMI, method arguments and return values are automatically serialized and deserialized between client and server.
+20. Is it possible to send complex objects instead of strings using RMI?
+
+Answer:
+Yes. Any object can be passed as long as it implements Serializable. For example, a custom Person class can be sent between client and server if it implements Serializable.
+21. Can we connect a client to a remote server on a different machine? How?
+
+Answer:
+Yes. You just need to use the IP address or hostname of the remote server instead of "localhost" in the Naming.lookup() call, like:
+
+Naming.lookup("rmi://192.168.1.100/Server");
+
+22. Why is exception handling important in RMI?
+
+Answer:
+RMI involves network communication, which is unreliable. Many things can go wrong: server may be down, network may fail, method may throw an error. That’s why all RMI methods throw RemoteException, and we must catch exceptions using try-catch.
+23. What ports does RMI use by default?
+
+Answer:
+
+    RMI Registry runs on port 1099 by default.
+
+    Remote objects can be assigned dynamic ports unless specified.
+
+You can bind to a specific port using:
+
+LocateRegistry.createRegistry(1099);
+
+24. Can you explain the flow of execution from Client to Server?
+
+Answer:
+
+    Server creates an object and registers it using Naming.rebind.
+
+    RMI Registry stores the reference.
+
+    Client connects to the RMI registry using Naming.lookup.
+
+    The stub is returned to the client.
+
+    Client calls method on the stub.
+
+    Stub sends the request to the server.
+
+    Server executes method and returns result.
+
+    Result is shown in the client.
+
+25. Why is RMI suitable for distributed applications?
+
+Answer:
+
+    It allows remote method calling as if it were local.
+
+    Java handles most of the networking, serialization, and communication.
+
+    It is ideal for building client-server and multi-tier applications.
+
+26. What are alternatives to RMI in Java today?
+
+Answer:
+
+    REST APIs using Spring Boot
+
+    gRPC (Google RPC)
+
+    WebSockets
+
+    Message Queues (Kafka, RabbitMQ) Modern applications often prefer REST or gRPC because they are more language-agnostic and cloud-friendly.
+
+27. What limitations do you see in RMI?
+
+Answer:
+
+    Works only in Java (not language-independent)
+
+    Requires both client and server to have the same interface/class files
+
+    Setup can be complex for large systems
+
+    Not ideal for microservices architecture
+
+28. How would you improve this assignment?
+
+Answer:
+
+    Add multiple operations (e.g., reverse, length, uppercase).
+
+    Add GUI for the client (using Swing).
+
+    Use threads to support multiple clients on the server side.
+
+    Log operations to a file.
+
+    Make it secure by adding authentication.
+
+29. What is the role of rmiregistry?
+
+Answer: rmiregistry is a name registry service that allows clients to look up remote objects by name. It must be started before running the server so the server can register the object and clients can discover it.
+30. What will happen if you forget to start rmiregistry?
+
+Answer: The server will throw an error like:
+
+java.rmi.ConnectException: Connection refused to host: localhost; nested exception is:
+java.net.ConnectException: Connection refused
+
+Because the object cannot be registered or looked up.
